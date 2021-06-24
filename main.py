@@ -30,8 +30,6 @@ rc('animation', html='html5')
                     period of the driving motion.
 
     animate       : update the image for iteration i of the Matplotlib animation.
-
-
 '''
 
 V     = lambda x: 0.5 * x**2 * (0.5 * x**2 - 1)
@@ -59,60 +57,85 @@ def solve_duffing(tmax, dt_per_period, t_trans, x0, v0, gamma, delta, omega):
 
 # Set up the motion for a oscillator with initial position
 # x0 and initially at rest.
-x0            = 0
-v0            = 0
-tmax          = 18000
-t_trans       = 300
-omega         = 1.4
-gamma         = 0.4
-delta         = 0.1
-dt_per_period = 100
+for i in range(1,2):
+    for j in range(1,2):
+        for k in range(1,2):
+            x0            = 0
+            v0            = 0
+            tmax          = 18000
+            t_trans       = 300
+            omega         = 1.4*i/5.0
+            gamma         = 0.4*j/5.0
+            delta         = 0.1*k/5.0
+            dt_per_period = 100
 
-# Solve the equation of motion.
-t, X, dt, pstep = solve_duffing(tmax, dt_per_period, t_trans, x0, v0, gamma, delta, omega)
-x, xdot = X.T
+            # Solve the equation of motion.
+            t, X, dt, pstep = solve_duffing(tmax, dt_per_period, t_trans, x0, v0, gamma, delta, omega)
+            x, xdot = X.T
 
-# The animation
-fig, ax = plt.subplots(nrows=2,ncols=2)
-ax1     = ax[0,0]
-ax1.plot(xgrid, Vgrid)
-ln1,    = ax1.plot([], [], 'mo')
-ax1.set_xlabel(r'$x / \mathrm{m}$')
-ax1.set_ylabel(r'$V(x) / \mathrm{J}$')
+            """
+            # The animation
+            fig, ax = plt.subplots(nrows=2,ncols=2)
+            ax1     = ax[0,0]
+            ax1.plot(xgrid, Vgrid)
+            ln1,    = ax1.plot([], [], 'mo')
+            ax1.set_xlabel(r'$x / \mathrm{m}$')
+            ax1.set_ylabel(r'$V(x) / \mathrm{J}$')
 
-# Position as a function of time
-ax2  = ax[1,0]
-ax2.set_xlabel(r'$t / \mathrm{s}$')
-ax2.set_ylabel(r'$x / \mathrm{m}$')
-ln2, = ax2.plot(t[:100], x[:100])
-ax2.set_ylim(np.min(x), np.max(x))
+            # Position as a function of time
+            ax2  = ax[1,0]
+            ax2.set_xlabel(r'$t / \mathrm{s}$')
+            ax2.set_ylabel(r'$x / \mathrm{m}$')
+            ln2, = ax2.plot(t[:100], x[:100])
+            ax2.set_ylim(np.min(x), np.max(x))
 
-# Phase space plot
-ax3  = ax[1,1]
-ax3.set_xlabel(r'$x / \mathrm{m}$')
-ax3.set_ylabel(r'$\dot{x} / \mathrm{m\,s^{-1}}$')
-ln3, = ax3.plot([], [])
-ax3.set_xlim(np.min(x), np.max(x))
-ax3.set_ylim(np.min(xdot), np.max(xdot))
+            # Phase space plot
+            ax3  = ax[1,1]
+            ax3.set_xlabel(r'$x / \mathrm{m}$')
+            ax3.set_ylabel(r'$\dot{x} / \mathrm{m\,s^{-1}}$')
+            ln3, = ax3.plot([], [])
+            ax3.set_xlim(np.min(x), np.max(x))
+            ax3.set_ylim(np.min(xdot), np.max(xdot))
 
-# Poincaré section plot
-ax4  = ax[0,1]
-ax4.set_xlabel(r'$x / \mathrm{m}$')
-ax4.set_ylabel(r'$\dot{x} / \mathrm{m\,s^{-1}}$')
-#ax4.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c=sbs.color_palette()[0])
-ax4.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c='blue')
-scat1 = ax4.scatter([x0], [v0], lw=0, c='m')
+            # Poincaré section plot
+            ax4  = ax[0,1]
+            ax4.set_xlabel(r'$x / \mathrm{m}$')
+            ax4.set_ylabel(r'$\dot{x} / \mathrm{m\,s^{-1}}$')
+            #ax4.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c=sbs.color_palette()[0])
+            ax4.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c='blue')
+            scat1 = ax4.scatter([x0], [v0], lw=0, c='m')
 
-plt.tight_layout()
+            plt.tight_layout()
 
-def animate(i):
-    ln1.set_data(x[i], V(x[i]))
-    ln2.set_data(t[:i+1], x[:i+1])
-    ax2.set_xlim(t_trans, t[i])
-    ln3.set_data(x[:i+1], xdot[:i+1])
-    if not i % pstep:
-        scat1.set_offsets(X[i])
-    return
+            def animate(i):
+                ln1.set_data(x[i], V(x[i]))
+                ln2.set_data(t[:i+1], x[:i+1])
+                ax2.set_xlim(t_trans, t[i])
+                ln3.set_data(x[:i+1], xdot[:i+1])
+                if not i % pstep:
+                    scat1.set_offsets(X[i])
+                return
 
-anim = animation.FuncAnimation(fig, animate, frames=len(x), interval=1)
-plt.show()
+            anim = animation.FuncAnimation(fig, animate, frames=len(x), interval=1)
+            """
+
+
+
+            #plt.tight_layout()
+            plt.gca().spines['top'].set_visible(False)
+            plt.gca().spines['right'].set_visible(False)
+            #plt.xlim(min(x)    , max(x)    )
+            #plt.ylim(min(xdot) , max(xdot) )
+            plt.title('Poincaré section for $\omega$ : %.3f'%omega+', $\gamma$ : %.3f'%gamma+', $\delta$ : %.3f'%delta,  y=1.08, fontsize=20 )
+            plt.xlabel('$x$' , fontsize=20)
+            plt.xticks(fontsize=12)
+            plt.ylabel('$\dot{x}$', fontsize=20)
+            plt.yticks(fontsize=12)
+            #plt.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c='blue')
+            plt.scatter(x[::pstep], xdot[::pstep], s=5, alpha=0.5, lw=0, c=sbs.color_palette("Spectral", len(x[::pstep]) ) )
+            #plt.scatter(x[::pstep], xdot[::pstep], s=2, lw=0, c= sbs.color_palette("viridis", as_cmap=True)  )
+
+
+
+            plt.savefig("Poincaré_section_omega=%.3f"%omega+"gamma=%.3f"%gamma+"delta=%.3f"%delta+".png",bbox_inches="tight",format="png")
+            plt.close()
